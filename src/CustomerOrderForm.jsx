@@ -141,6 +141,9 @@ export default function CustomerOrderForm() {
   const [locations, setLocations] = useState({ manufacturing_locations: [], dispatch_locations: [] });
   const [qrData, setQrData] = useState(null);
 
+
+  const base_url = "http://localhost:8000/api";
+
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -156,8 +159,8 @@ export default function CustomerOrderForm() {
   const [selectedKits, setSelectedKits] = useState([]); // Stores multiple kits
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/kits/').then((res) => setKits(res.data));
-    axios.get('http://localhost:8000/api/locations/').then((res) => setLocations(res.data));
+    axios.get(`${base_url}/kits/`).then((res) => setKits(res.data));
+    axios.get(`${base_url}/locations/`).then((res) => setLocations(res.data));
   }, []);
 
   const handleInputChange = (e) => {
@@ -193,7 +196,7 @@ export default function CustomerOrderForm() {
     };
 
     try {
-      const response = await axios.post('http://localhost:8000/api/create-order/', payload);
+      const response = await axios.post(`${base_url}/create-order/`, payload);
       setQrData(response.data);
     } catch (error) {
       console.error(error);
@@ -203,12 +206,12 @@ export default function CustomerOrderForm() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Customer Order Form</h2>
+      <h2>Production QR Generate</h2>
 
-      <input name="name" placeholder="Customer Name" onChange={handleInputChange} /><br />
+      {/* <input name="name" placeholder="Customer Name" onChange={handleInputChange} /><br />
       <textarea name="address" placeholder="Customer Address" onChange={handleInputChange} /><br />
       <input name="phone" placeholder="Phone" onChange={handleInputChange} /><br />
-      <input name="email" placeholder="Email" onChange={handleInputChange} /><br />
+      <input name="email" placeholder="Email" onChange={handleInputChange} /><br /> */}
 
       <h3>Kit Selection</h3>
       <select name="tilt_angle" onChange={handleKitParamChange}>
@@ -229,17 +232,17 @@ export default function CustomerOrderForm() {
           <option key={cfg} value={cfg}>{cfg}</option>
         ))}
       </select>
-      <input
+      {/* <input
         type="number"
         value={kitQuantity}
         onChange={(e) => setKitQuantity(e.target.value)}
         min="1"
         placeholder="Quantity"
-      />
-      <button onClick={handleAddKit}>Add Kit</button>
+      /> */}
+      {/* <button onClick={handleAddKit}>Add Kit</button> */}
 
       {/* Display list of kits added */}
-      {selectedKits.length > 0 && (
+      {/* {selectedKits.length > 0 && (
         <div>
           <h4>Selected Kits:</h4>
           <ul>
@@ -269,7 +272,7 @@ export default function CustomerOrderForm() {
           </ul>
 
         </div>
-      )}
+      )} */}
 
       <h3>Locations</h3>
       <select name="manufacturing_location" onChange={handleInputChange}>
