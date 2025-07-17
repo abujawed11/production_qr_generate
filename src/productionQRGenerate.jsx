@@ -381,7 +381,7 @@ function App() {
       prod_unit: prodUnit,
       warehouse,
       project_id: _projectId,
-      kit_no: kitCount,
+      Total_Kit: kitCount,
       date: _today,
     };
 
