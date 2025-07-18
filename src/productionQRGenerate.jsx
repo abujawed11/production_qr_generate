@@ -293,7 +293,7 @@ function App() {
   useEffect(() => {
     if (clientId) {
       axios.get(`${base_url}/client-order-count/${clientId}/`)
-        .then(res => setOrderCount(res.data.count + 1))
+        .then(res => setOrderCount(res.data.count))
         .catch(err => console.error(err));
     }
   }, [clientId]);
