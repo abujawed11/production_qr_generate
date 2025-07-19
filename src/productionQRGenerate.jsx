@@ -370,7 +370,7 @@ function App() {
     }
 
     const _today = new Date().toISOString().split('T')[0];
-    const _projectId = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
+    const _projectId = `${clientId}/${String(orderCount).padStart(2, '0')}`;
 
     setToday(_today);
     setProjectId(_projectId);
