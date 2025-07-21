@@ -298,69 +298,7 @@ function App() {
     }
   }, [clientId]);
 
-  // const generateQrCodes = () => {
-  //   if (!clientId || !kitId) return alert("Select client and kit");
 
-  //   const date = new Date().toISOString().split('T')[0];
-  //   const project_id = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
-
-  //   const qrList = [];
-  //   for (let i = 1; i <= kitCount; i++) {
-  //     const data = {
-  //       type: 'KIT',
-  //       kit_id: kitId,
-  //       prod_unit: prodUnit,
-  //       warehouse,
-  //       project_id,
-  //       kit_no: i,
-  //       date,
-  //     };
-  //     qrList.push(useJson ? JSON.stringify(data, null, 2) : Object.values(data).join(' | '));
-  //   }
-  //   setQrCodes(qrList);
-  // };
-
-  // const generateQrCodes = async () => {
-  //   if (!clientId || !kitId) {
-  //     alert("Please select both client and kit.");
-  //     return;
-  //   }
-
-  //   const today = new Date().toISOString().split('T')[0];
-  //   const projectId = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
-  //   const payload = {
-  //     type: "KIT",
-  //     kit_id: kitId,
-  //     prod_unit: prodUnit,
-  //     warehouse,
-  //     project_id: projectId,
-  //     kit_no: kitCount,  // ✅ Send only 1 record with total count
-  //     date: today
-  //   };
-
-  //   try {
-  //     const res = await axios.post(`${base_url}/save-qr/`, payload);
-  //     console.log("QR saved:", res.data);
-
-  //     // ✅ Generate QR display, but do NOT send each to backend
-  //     const qrList = [];
-  //     for (let i = 1; i <= kitCount; i++) {
-  //       const visualData = {
-  //         ...payload,
-  //         kit_no: i  // For showing different QR visually
-  //       };
-  //       const code = useJson
-  //         ? JSON.stringify(visualData, null, 2)
-  //         : Object.values(visualData).join(' | ');
-  //       qrList.push(code);
-  //     }
-
-  //     setQrCodes(qrList);
-  //   } catch (error) {
-  //     console.error("Error saving QR:", error.response?.data || error.message);
-  //     alert("QR saving failed. Possible duplicate or invalid data.");
-  //   }
-  // };
 
 
   const generateQrCodes = async () => {
