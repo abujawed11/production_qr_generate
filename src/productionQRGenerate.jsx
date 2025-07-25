@@ -252,13 +252,1111 @@
 // export default App;
 
 
+// import React, { useEffect, useState } from 'react';
+// import QRCode from 'react-qr-code';
+// import axios from 'axios';
+// import './App.css';
+
+// function App() {
+//   const [clients, setClients] = useState([]);
+//   const [kits, setKits] = useState([]);
+//   const [clientId, setClientId] = useState('');
+//   const [kitId, setKitId] = useState('');
+//   const [orderCount, setOrderCount] = useState(0);
+//   const [kitCount, setKitCount] = useState(1);
+//   const [prodUnit, setProdUnit] = useState('RH');
+//   const [warehouse, setWarehouse] = useState('BS');
+//   const [qrCodes, setQrCodes] = useState([]);
+//   const [useJson, setUseJson] = useState(true);
+//   const [projectId, setProjectId] = useState('');
+//   const [today, setToday] = useState('');
+
+//   const base_url = 'http://10.20.2.78:8000/api';
+
+//   const fetchInitialData = async () => {
+//     const [clientRes, kitRes] = await Promise.all([
+//       axios.get(`${base_url}/clients/`),
+//       axios.get(`${base_url}/kits/`)
+//     ]);
+
+//     setClients(clientRes.data);
+//     setKits(kitRes.data);
+//   };
+
+//   useEffect(() => {
+//     fetchInitialData();
+//   }, []);
+
+//   useEffect(() => {
+//     if (clientId) {
+//       axios.get(`${base_url}/client-order-count/${clientId}/`)
+//         .then(res => setOrderCount(res.data.count + 1))
+//         .catch(err => console.error(err));
+//     }
+//   }, [clientId]);
+
+//   const generateQrCodes = async () => {
+//     if (!clientId || !kitId) {
+//       alert("Please select both client and kit.");
+//       return;
+//     }
+
+//     const _today = new Date().toISOString().split('T')[0];
+//     const _projectId = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
+
+//     setToday(_today);
+//     setProjectId(_projectId);
+
+//     const payload = {
+//       type: "KIT",
+//       kit_id: kitId,
+//       prod_unit: prodUnit,
+//       warehouse,
+//       project_id: _projectId,
+//       Total_Kit: kitCount,
+//       date: _today,
+//     };
+
+//     try {
+//       const res = await axios.post(`${base_url}/save-qr/`, payload);
+//       console.log("QR saved:", res.data);
+
+//       const qrList = [];
+//       for (let i = 1; i <= kitCount; i++) {
+//         const visualData = {
+//           ...payload,
+//           kit_no: i
+//         };
+//         const code = useJson
+//           ? JSON.stringify(visualData, null, 2)
+//           : Object.values(visualData).join(' | ');
+//         qrList.push(code);
+//       }
+
+//       setQrCodes(qrList);
+//     } catch (error) {
+//       console.error("Error saving QR:", error.response?.data || error.message);
+//       alert("QR saving failed. Possible duplicate or invalid data.");
+//     }
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="form-container">
+//         <h2>Kit QR Code Generator</h2>
+
+//         <label>Client:
+//           <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+//             <option value="">-- Select Client --</option>
+//             {clients.map(c => (
+//               <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Kit:
+//           <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+//             <option value="">-- Select Kit --</option>
+//             {kits.map(k => (
+//               <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Production Unit:
+//           <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+//             <option value="RH">Ranchi(RH)</option>
+//             <option value="BS">Boisar(BS)</option>
+//           </select>
+//         </label>
+
+//         <label>Warehouse:
+//           <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+//             <option value="RH">Ranchi(RH)</option>
+//             <option value="BS">Boisar(BS)</option>
+//             <option value="CN">Chennai(CN)</option>
+//           </select>
+//         </label>
+
+//         <label>No. of Kits:
+//           <input type="number" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
+//         </label>
+
+//         <button onClick={generateQrCodes}>Generate QR Codes</button>
+//       </div>
+
+//       <div className="qr-codes">
+//         {qrCodes.map((code, i) => (
+//           <div key={i} className="qr-item">
+//             <QRCode value={code} size={128} />
+//             <pre>{`${kitId} | ${prodUnit} | ${warehouse} | ${projectId} | ${i + 1} | ${today}`}</pre>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// import React, { useEffect, useState } from 'react';
+// import QRCode from 'react-qr-code';
+// import axios from 'axios';
+// import html2canvas from 'html2canvas';
+// import './App.css';
+
+// function ProductionQRGenerate() {
+//   const [clients, setClients] = useState([]);
+//   const [kits, setKits] = useState([]);
+//   const [clientId, setClientId] = useState('');
+//   const [kitId, setKitId] = useState('');
+//   const [orderCount, setOrderCount] = useState(0);
+//   const [kitCount, setKitCount] = useState(1);
+//   const [prodUnit, setProdUnit] = useState('RH');
+//   const [warehouse, setWarehouse] = useState('BS');
+//   const [qrCodes, setQrCodes] = useState([]);
+//   const [useJson, setUseJson] = useState(true);
+//   const [projectId, setProjectId] = useState('');
+//   const [today, setToday] = useState('');
+
+//   const base_url = 'http://10.20.2.78:8000/api';
+
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const [clientRes, kitRes] = await Promise.all([
+//           axios.get(`${base_url}/clients/`),
+//           axios.get(`${base_url}/kits/`)
+//         ]);
+//         setClients(clientRes.data);
+//         setKits(kitRes.data);
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//       }
+//     };
+//     fetchInitialData();
+//   }, []);
+
+//   useEffect(() => {
+//     if (clientId) {
+//       axios
+//         .get(`${base_url}/client-order-count/${clientId}/`)
+//         .then((res) => setOrderCount(res.data.count + 1))
+//         .catch((err) => console.error(err));
+//     }
+//   }, [clientId]);
+
+//   const generateQrCodes = async () => {
+//     if (!clientId || !kitId) {
+//       alert('Please select both client and kit.');
+//       return;
+//     }
+
+//     const _today = new Date().toISOString().split('T')[0];
+//     const _projectId = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
+
+//     setToday(_today);
+//     setProjectId(_projectId);
+
+//     const payload = {
+//       type: 'KIT',
+//       kit_id: kitId,
+//       prod_unit: prodUnit,
+//       warehouse,
+//       project_id: _projectId,
+//       Total_Kit: kitCount,
+//       date: _today
+//     };
+
+//     try {
+//       const res = await axios.post(`${base_url}/save-qr/`, payload);
+//       console.log('QR saved:', res.data);
+
+//       const qrList = [];
+//       for (let i = 1; i <= kitCount; i++) {
+//         const visualData = {
+//           ...payload,
+//           kit_no: i
+//         };
+//         const code = useJson
+//           ? JSON.stringify(visualData, null, 2)
+//           : Object.values(visualData).join(' | ');
+//         qrList.push(code);
+//       }
+
+//       setQrCodes(qrList);
+//     } catch (error) {
+//       console.error('Error saving QR:', error.response?.data || error.message);
+//       alert('QR saving failed. Possible duplicate or invalid data.');
+//     }
+//   };
+
+//   const handleDownload = async (index) => {
+//     const element = document.getElementById(`qr-container-${index}`);
+//     const canvas = await html2canvas(element, { scale: 2 });
+//     const link = document.createElement('a');
+//     link.download = `QR_${index + 1}.png`;
+//     link.href = canvas.toDataURL('image/png');
+//     link.click();
+//   };
+
+//   const handlePrint = async (index) => {
+//     const element = document.getElementById(`qr-container-${index}`);
+//     const canvas = await html2canvas(element, { scale: 2 });
+//     const dataUrl = canvas.toDataURL('image/png');
+
+//     const printWindow = window.open('', '_blank');
+//     printWindow.document.write(`
+//       <html>
+//         <head>
+//           <title>Print QR</title>
+//           <style>
+//             body { margin: 0; text-align: center; }
+//             img { width: 4in; height: 6in; margin: 0 auto; display: block; }
+//           </style>
+//         </head>
+//         <body>
+//           <img src="${dataUrl}" onload="window.print();window.close();" />
+//         </body>
+//       </html>
+//     `);
+//     printWindow.document.close();
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="form-container">
+//         <h2>Kit QR Code Generator</h2>
+
+//         <label>Client:
+//           <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+//             <option value="">-- Select Client --</option>
+//             {clients.map(c => (
+//               <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Kit:
+//           <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+//             <option value="">-- Select Kit --</option>
+//             {kits.map(k => (
+//               <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Production Unit:
+//           <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//           </select>
+//         </label>
+
+//         <label>Warehouse:
+//           <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//             <option value="CN">Chennai (CN)</option>
+//           </select>
+//         </label>
+
+//         <label>No. of Kits:
+//           <input
+//             type="number"
+//             value={kitCount}
+//             onChange={(e) => setKitCount(Number(e.target.value))}
+//             min="1"
+//           />
+//         </label>
+
+//         <label>
+//           Output Format:
+//           <select value={useJson ? "json" : "text"} onChange={(e) => setUseJson(e.target.value === "json")}>
+//             <option value="json">JSON</option>
+//             <option value="text">Text (pipe separated)</option>
+//           </select>
+//         </label>
+
+//         <button onClick={generateQrCodes}>Generate QR Codes</button>
+//       </div>
+
+//       <div className="qr-codes">
+//         {qrCodes.map((code, i) => (
+//           <div key={i} className="qr-item">
+//             <div id={`qr-container-${i}`}>
+//               <QRCode value={code} size={200} />
+//               <pre>{`${kitId} | ${prodUnit} | ${warehouse} | ${projectId} | ${i + 1} | ${today}`}</pre>
+//             </div>
+//             <div className="qr-buttons">
+//               <button onClick={() => handleDownload(i)}>Download</button>
+//               <button onClick={() => handlePrint(i)}>Print</button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default ProductionQRGenerate;
+// File: src/productionQRGenerate.jsx
+
+
+// import React, { useEffect, useState } from 'react';
+// import QRCode from 'react-qr-code';
+// import axios from 'axios';
+// import { toPng } from 'html-to-image';
+// import jsPDF from 'jspdf';
+// import './App.css';
+
+// function App() {
+//   const [clients, setClients] = useState([]);
+//   const [kits, setKits] = useState([]);
+//   const [clientId, setClientId] = useState('');
+//   const [kitId, setKitId] = useState('');
+//   const [orderCount, setOrderCount] = useState(0);
+//   const [kitCount, setKitCount] = useState(1);
+//   const [prodUnit, setProdUnit] = useState('RH');
+//   const [warehouse, setWarehouse] = useState('BS');
+//   const [qrCodes, setQrCodes] = useState([]);
+//   const [useJson, setUseJson] = useState(true);
+//   const [projectId, setProjectId] = useState('');
+//   const [today, setToday] = useState('');
+
+//   // const base_url = 'http://10.20.2.78:8000/api'; working inoffice
+//   const base_url = 'http://192.168.1.107:8000/api';
+
+//   const fetchInitialData = async () => {
+//     const [clientRes, kitRes] = await Promise.all([
+//       axios.get(`${base_url}/clients/`),
+//       axios.get(`${base_url}/kits/`)
+//     ]);
+
+//     setClients(clientRes.data);
+//     setKits(kitRes.data);
+//   };
+
+//   useEffect(() => {
+//     fetchInitialData();
+//   }, []);
+
+//   useEffect(() => {
+//     if (clientId) {
+//       axios.get(`${base_url}/client-order-count/${clientId}/`)
+//         .then(res => setOrderCount(res.data.count))
+//         .catch(err => console.error(err));
+//     }
+//   }, [clientId]);
+
+//   const generateQrCodes = async () => {
+//     if (!clientId || !kitId) {
+//       alert("Please select both client and kit.");
+//       return;
+//     }
+
+//     const _today = new Date().toISOString().split('T')[0];
+//     const _projectId = `${clientId}/ ${String(orderCount).padStart(2, '0')}`;
+
+//     setToday(_today);
+//     setProjectId(_projectId);
+
+//     const payload = {
+//       type: "KIT",
+//       kit_id: kitId,
+//       prod_unit: prodUnit,
+//       warehouse,
+//       project_id: _projectId,
+//       Total_Kit: kitCount,
+//       date: _today,
+//     };
+
+//     try {
+//       const res = await axios.post(`${base_url}/save-qr/`, payload);
+//       console.log("QR saved:", res.data);
+
+//       const qrList = [];
+//       for (let i = 1; i <= kitCount; i++) {
+//         const visualData = {
+//           ...payload,
+//           kit_no: i
+//         };
+//         const code = useJson
+//           ? JSON.stringify(visualData, null, 2)
+//           : Object.values(visualData).join(' | ');
+//         qrList.push({ code, label: `${kitId} | ${prodUnit} | ${warehouse} | ${_projectId} | ${i} | ${_today}` });
+//       }
+
+//       setQrCodes(qrList);
+//     } catch (error) {
+//       console.error("Error saving QR:", error.response?.data || error.message);
+//       alert("QR saving failed. Possible duplicate or invalid data.");
+//     }
+//   };
+
+//   const handleDownload = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const link = document.createElement('a');
+//       link.download = `QR_${index + 1}.png`;
+//       link.href = dataUrl;
+//       link.click();
+//     } catch (err) {
+//       console.error('Download failed:', err);
+//     }
+//   };
+
+//   const handlePrint = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const win = window.open();
+//       if (!win) return;
+
+//       win.document.write(`
+//         <html>
+//           <head><title>Print QR</title></head>
+//           <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+//             <img src="${dataUrl}" style="width:6cm; height:auto;" onload="window.print(); window.close()" />
+//           </body>
+//         </html>
+//       `);
+//       win.document.close();
+//     } catch (err) {
+//       console.error('Print failed:', err);
+//     }
+//   };
+
+//   const handleDownloadPDF = async () => {
+//     const pdf = new jsPDF({
+//       orientation: 'portrait',
+//       unit: 'cm',
+//       format: 'a4'
+//     });
+
+//     const margin = 2;
+//     const qrSize = 6;
+//     let x = margin;
+//     let y = margin;
+
+//     for (let i = 0; i < qrCodes.length; i++) {
+//       const node = document.getElementById(`qr-block-${i}`);
+//       if (!node) continue;
+
+//       try {
+//         const dataUrl = await toPng(node);
+//         pdf.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize + 1.2);
+//         x += qrSize + margin;
+
+//         if (x + qrSize > 21) {
+//           x = margin;
+//           y += qrSize + 2;
+//         }
+
+//         if (y + qrSize > 29.7 - margin) {
+//           pdf.addPage();
+//           x = margin;
+//           y = margin;
+//         }
+//       } catch (err) {
+//         console.error('Error rendering QR to PDF:', err);
+//       }
+//     }
+
+//     pdf.save('All_QRCodes.pdf');
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="form-container">
+//         <h2>Kit QR Code Generator</h2>
+
+//         <label>Client:
+//           <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+//             <option value="">-- Select Client --</option>
+//             {clients.map(c => (
+//               <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Kit:
+//           <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+//             <option value="">-- Select Kit --</option>
+//             {kits.map(k => (
+//               <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Production Unit:
+//           <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+//             <option value="RH">Ranchi(RH)</option>
+//             <option value="BS">Boisar(BS)</option>
+//           </select>
+//         </label>
+
+//         <label>Warehouse:
+//           <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+//             <option value="RH">Ranchi(RH)</option>
+//             <option value="BS">Boisar(BS)</option>
+//             <option value="CN">Chennai(CN)</option>
+//           </select>
+//         </label>
+
+//         <label>No. of Kits:
+//           <input type="number" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
+//         </label>
+
+//         <button onClick={generateQrCodes}>Generate QR Codes</button>
+//       </div>
+
+//       {qrCodes.length > 0 && (
+//         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+//           <button onClick={handleDownloadPDF} style={{ backgroundColor: '#6c63ff', padding: '0.75rem 1.5rem', fontSize: '1rem', borderRadius: '8px', color: 'white', border: 'none', cursor: 'pointer' }}>
+//             Download All as PDF
+//           </button>
+//         </div>
+//       )}
+
+//       <div className="qr-codes">
+//         {qrCodes.map((item, i) => (
+//           <div key={i} className="qr-item">
+//             <div id={`qr-block-${i}`} className="qr-block">
+//               <div className="qr-svg-wrapper" style={{ position: 'relative' }}>
+//   <QRCode value={item.code} size={227} />
+//   <img
+//     src="/Logo.png"  // <-- Important: leading slash
+//     alt="Logo"
+//     className="qr-logo"
+//   />
+// </div>
+
+//               <div className="qr-label">{item.label}</div>
+//             </div>
+//             <div className="qr-buttons">
+//               <button onClick={() => handlePrint(i)}>Print</button>
+//               <button onClick={() => handleDownload(i)}>Download</button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+// import React, { useEffect, useState } from 'react';
+// import QRCode from 'react-qr-code';
+// import axios from 'axios';
+// import { toPng } from 'html-to-image';
+// import jsPDF from 'jspdf';
+
+// import './App.css';
+
+// function App() {
+//   const [clients, setClients] = useState([]);
+//   const [kits, setKits] = useState([]);
+//   const [clientId, setClientId] = useState('');
+//   const [kitId, setKitId] = useState('');
+//   const [orderCount, setOrderCount] = useState(0);
+//   const [kitCount, setKitCount] = useState(1);
+//   const [prodUnit, setProdUnit] = useState('RH');
+//   const [warehouse, setWarehouse] = useState('BS');
+//   const [qrCodes, setQrCodes] = useState([]);
+//   const [useJson, setUseJson] = useState(true);
+//   const [projectId, setProjectId] = useState('');
+//   const [today, setToday] = useState('');
+
+//   const base_url = 'http://10.20.2.78:8000/api'; // office URL
+//   // const base_url = 'http://192.168.1.110:8000/api';      //PG URL
+
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const [clientRes, kitRes] = await Promise.all([
+//           axios.get(`${base_url}/clients/`),
+//           axios.get(`${base_url}/kits/`)
+//         ]);
+//         setClients(clientRes.data);
+//         setKits(kitRes.data);
+//       } catch (error) {
+//         console.error('Error fetching clients/kits:', error);
+//       }
+//     };
+
+//     fetchInitialData();
+//   }, []);
+
+//   useEffect(() => {
+//     if (clientId) {
+//       axios.get(`${base_url}/client-order-count/${clientId}/`)
+//         .then(res => setOrderCount(res.data.count))
+//         .catch(err => console.error(err));
+//     }
+//   }, [clientId]);
+
+//   const generateQrCodes = async () => {
+//     if (!clientId || !kitId) {
+//       alert("Please select both client and kit.");
+//       return;
+//     }
+
+//     const _today = new Date().toISOString().split('T')[0];
+//     const _projectId = `${clientId}/${String(orderCount).padStart(2, '0')}`;
+//     setToday(_today);
+//     setProjectId(_projectId);
+
+//     const payload = {
+//       type: "KIT",
+//       kit_id: kitId,
+//       prod_unit: prodUnit,
+//       warehouse,
+//       project_id: _projectId,
+//       Total_Kit: kitCount,
+//       date: _today,
+//     };
+
+//     try {
+//       const res = await axios.post(`${base_url}/save-qr/`, payload);
+//       console.log("QR saved:", res.data);
+
+//       const qrList = [];
+//       for (let i = 1; i <= kitCount; i++) {
+//         const visualData = { ...payload, kit_no: i };
+//         const code = useJson
+//           ? JSON.stringify(visualData, null, 2)
+//           : Object.values(visualData).join(' | ');
+
+//         qrList.push({
+//           code,
+//           label: `${kitId} | ${prodUnit} | ${warehouse} | ${_projectId} | ${i} | ${_today}`
+//         });
+//       }
+
+//       setQrCodes(qrList);
+//     } catch (error) {
+//       console.error("Error saving QR:", error);
+//       alert("QR saving failed. Possible duplicate or invalid data.");
+//     }
+//   };
+
+//   const handleDownload = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const link = document.createElement('a');
+//       link.download = `QR_${index + 1}.png`;
+//       link.href = dataUrl;
+//       link.click();
+//     } catch (err) {
+//       console.error('Download failed:', err);
+//     }
+//   };
+
+//   const handlePrint = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const win = window.open();
+//       if (!win) return;
+
+//       win.document.write(`
+//         <html>
+//           <head><title>Print QR</title></head>
+//           <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+//             <img src="${dataUrl}" style="width:6cm; height:auto;" onload="window.print(); window.close()" />
+//           </body>
+//         </html>
+//       `);
+//       win.document.close();
+//     } catch (err) {
+//       console.error('Print failed:', err);
+//     }
+//   };
+
+//   const handleDownloadPDF = async () => {
+//     const pdf = new jsPDF({
+//       orientation: 'portrait',
+//       unit: 'cm',
+//       format: 'a4'
+//     });
+
+//     const margin = 2;
+//     const qrSize = 6;
+//     let x = margin;
+//     let y = margin;
+
+//     for (let i = 0; i < qrCodes.length; i++) {
+//       const node = document.getElementById(`qr-block-${i}`);
+//       if (!node) continue;
+
+//       try {
+//         const dataUrl = await toPng(node);
+//         pdf.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize + 1.2);
+//         x += qrSize + margin;
+
+//         if (x + qrSize > 21) {
+//           x = margin;
+//           y += qrSize + 2;
+//         }
+
+//         if (y + qrSize > 29.7 - margin) {
+//           pdf.addPage();
+//           x = margin;
+//           y = margin;
+//         }
+//       } catch (err) {
+//         console.error('Error rendering QR to PDF:', err);
+//       }
+//     }
+
+//     pdf.save('All_QRCodes.pdf');
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="form-container">
+//         <h2>Kit QR Code Generator</h2>
+
+//         <label>Client:
+//           <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+//             <option value="">-- Select Client --</option>
+//             {clients.map(c => (
+//               <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Kit:
+//           <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+//             <option value="">-- Select Kit --</option>
+//             {kits.map(k => (
+//               <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Production Unit:
+//           <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//           </select>
+//         </label>
+
+//         <label>Warehouse:
+//           <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//             <option value="CN">Chennai (CN)</option>
+//           </select>
+//         </label>
+
+//         <label>No. of Kits:
+//           <input type="number" min="1" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
+//         </label>
+
+//         <button onClick={generateQrCodes}>Generate QR Codes</button>
+//       </div>
+
+//       {qrCodes.length > 0 && (
+//         <div className="pdf-download-container">
+//           <button onClick={handleDownloadPDF}>Download All as PDF</button>
+//         </div>
+//       )}
+
+//       <div className="qr-codes">
+//         {qrCodes.map((item, i) => (
+//           <div key={i} className="qr-item">
+//             <div id={`qr-block-${i}`} className="qr-block">
+//               <div className="qr-svg-wrapper">
+//                 <QRCode value={item.code} size={227} />
+//                 <img src="/Logo.png" alt="Logo" className="qr-logo" />
+//               </div>
+//               <div className="qr-label">{item.label}</div>
+//             </div>
+//             <div className="qr-buttons">
+//               <button onClick={() => handlePrint(i)}>Print</button>
+//               <button onClick={() => handleDownload(i)}>Download</button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+// import React, { useEffect, useState } from 'react';
+// import QRCode from 'react-qr-code';
+// import axios from 'axios';
+// import { toPng } from 'html-to-image';
+// import jsPDF from 'jspdf';
+
+// import './App.css';
+
+// function App() {
+//   const [clients, setClients] = useState([]);
+//   const [kits, setKits] = useState([]);
+//   const [clientId, setClientId] = useState('');
+//   const [kitId, setKitId] = useState('');
+//   const [orderCount, setOrderCount] = useState(0);
+//   const [kitCount, setKitCount] = useState(1);
+//   const [prodUnit, setProdUnit] = useState('RH');
+//   const [warehouse, setWarehouse] = useState('BS');
+//   const [qrCodes, setQrCodes] = useState([]);
+//   const [useJson, setUseJson] = useState(true);
+//   const [projectId, setProjectId] = useState('');
+//   const [today, setToday] = useState('');
+
+//   const base_url = 'http://10.20.2.78:8000/api'; // office URL
+
+//   useEffect(() => {
+//     const fetchInitialData = async () => {
+//       try {
+//         const [clientRes, kitRes] = await Promise.all([
+//           axios.get(`${base_url}/clients/`),
+//           axios.get(`${base_url}/kits/`)
+//         ]);
+//         setClients(clientRes.data);
+//         setKits(kitRes.data);
+//       } catch (error) {
+//         console.error('Error fetching clients/kits:', error);
+//       }
+//     };
+
+//     fetchInitialData();
+//   }, []);
+
+//   useEffect(() => {
+//     if (clientId) {
+//       axios.get(`${base_url}/client-order-count/${clientId}/`)
+//         .then(res => setOrderCount(res.data.count))
+//         .catch(err => console.error(err));
+//     }
+//   }, [clientId]);
+
+//   const generateQrCodes = async () => {
+//     if (!clientId || !kitId) {
+//       alert("Please select both client and kit.");
+//       return;
+//     }
+
+//     const _today = new Date().toISOString().split('T')[0];
+//     const _projectId = `${clientId}/${String(orderCount).padStart(2, '0')}`;
+//     setToday(_today);
+//     setProjectId(_projectId);
+
+//     const payload = {
+//       type: "KIT",
+//       kit_id: kitId,
+//       prod_unit: prodUnit,
+//       warehouse,
+//       project_id: _projectId,
+//       Total_Kit: kitCount,
+//       date: _today,
+//     };
+
+//     try {
+//       const res = await axios.post(`${base_url}/save-qr/`, payload);
+//       console.log("QR saved:", res.data);
+
+//       const qrList = [];
+//       for (let i = 1; i <= kitCount; i++) {
+//         const visualData = { ...payload, kit_no: i };
+//         const code = useJson
+//           ? JSON.stringify(visualData, null, 2)
+//           : Object.values(visualData).join(' | ');
+
+//         qrList.push({
+//           code,
+//           label: `${kitId} | ${prodUnit} | ${warehouse} | ${_projectId} | ${i} | ${_today}`
+//         });
+//       }
+
+//       setQrCodes(qrList);
+//     } catch (error) {
+//       console.error("Error saving QR:", error);
+//       alert("QR saving failed. Possible duplicate or invalid data.");
+//     }
+//   };
+
+//   const handleDownload = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const link = document.createElement('a');
+//       link.download = `QR_${index + 1}.png`;
+//       link.href = dataUrl;
+//       setTimeout(() => {
+//         link.click();
+//       }, 100); // avoid blocking UI
+//     } catch (err) {
+//       console.error('Download failed:', err);
+//     }
+//   };
+
+//   const handlePrint = async (index) => {
+//     const node = document.getElementById(`qr-block-${index}`);
+//     try {
+//       const dataUrl = await toPng(node);
+//       const printWindow = window.open('', '_blank', 'width=800,height=600');
+//       if (!printWindow) {
+//         alert("Pop-up blocked! Please allow pop-ups for this site.");
+//         return;
+//       }
+
+//       printWindow.document.write(`
+//         <html>
+//           <head><title>Print QR</title></head>
+//           <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+//             <img src="${dataUrl}" style="width:6cm; height:auto;" />
+//             <script>
+//               window.onload = function() {
+//                 setTimeout(() => {
+//                   window.print();
+//                   window.close();
+//                 }, 500);
+//               };
+//             </script>
+//           </body>
+//         </html>
+//       `);
+//       printWindow.document.close();
+//     } catch (err) {
+//       console.error('Print failed:', err);
+//     }
+//   };
+
+//   const handleDownloadPDF = async () => {
+//     const pdf = new jsPDF({
+//       orientation: 'portrait',
+//       unit: 'cm',
+//       format: 'a4'
+//     });
+
+//     const margin = 2;
+//     const qrSize = 6;
+//     let x = margin;
+//     let y = margin;
+
+//     for (let i = 0; i < qrCodes.length; i++) {
+//       const node = document.getElementById(`qr-block-${i}`);
+//       if (!node) continue;
+
+//       try {
+//         const dataUrl = await toPng(node);
+//         pdf.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize + 1.2);
+//         x += qrSize + margin;
+
+//         if (x + qrSize > 21) {
+//           x = margin;
+//           y += qrSize + 2;
+//         }
+
+//         if (y + qrSize > 29.7 - margin) {
+//           pdf.addPage();
+//           x = margin;
+//           y = margin;
+//         }
+//       } catch (err) {
+//         console.error('Error rendering QR to PDF:', err);
+//       }
+//     }
+
+//     pdf.save('All_QRCodes.pdf');
+//   };
+
+//   return (
+//     <div className="App">
+//       <div className="form-container">
+//         <h2>Kit QR Code Generator</h2>
+
+//         <label>Client:
+//           <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+//             <option value="">-- Select Client --</option>
+//             {clients.map(c => (
+//               <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Kit:
+//           <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+//             <option value="">-- Select Kit --</option>
+//             {kits.map(k => (
+//               <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+//             ))}
+//           </select>
+//         </label>
+
+//         <label>Production Unit:
+//           <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//           </select>
+//         </label>
+
+//         <label>Warehouse:
+//           <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+//             <option value="RH">Ranchi (RH)</option>
+//             <option value="BS">Boisar (BS)</option>
+//             <option value="CN">Chennai (CN)</option>
+//           </select>
+//         </label>
+
+//         <label>No. of Kits:
+//           <input type="number" min="1" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
+//         </label>
+
+//         <button onClick={generateQrCodes}>Generate QR Codes</button>
+//       </div>
+
+//       {qrCodes.length > 0 && (
+//         <div className="pdf-download-container">
+//           <button onClick={handleDownloadPDF}>Download All as PDF</button>
+//         </div>
+//       )}
+
+//       <div className="qr-codes">
+//         {qrCodes.map((item, i) => (
+//           <div key={i} className="qr-item">
+//             <div id={`qr-block-${i}`} className="qr-block">
+//               <div className="qr-svg-wrapper">
+//                 <QRCode value={item.code} size={227} />
+//                 <img src="/Logo.png" alt="Logo" className="qr-logo" />
+//               </div>
+//               <div className="qr-label">{item.label}</div>
+//             </div>
+//             <div className="qr-buttons">
+//               <button onClick={() => handlePrint(i)}>Print</button>
+//               <button onClick={() => handleDownload(i)}>Download</button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-// import  api  from './utils/api';
 import axios from 'axios';
+import { toPng } from 'html-to-image';
+import jsPDF from 'jspdf';
+
 import './App.css';
 
-function App() {
+function QRGenerator() {
   const [clients, setClients] = useState([]);
   const [kits, setKits] = useState([]);
   const [clientId, setClientId] = useState('');
@@ -272,21 +1370,23 @@ function App() {
   const [projectId, setProjectId] = useState('');
   const [today, setToday] = useState('');
 
+  const navigate = useNavigate();
 
-  const base_url = 'http://localhost:8000/api';
-
-  const fetchInitialData = async () => {
-    const [clientRes, kitRes] = await Promise.all([
-      axios.get(`${base_url}/clients/`),
-      axios.get(`${base_url}/kits/`)
-    ]);
-
-    console.log("Clients", clientRes.data)
-    setClients(clientRes.data);
-    setKits(kitRes.data);
-  };
+  const base_url = 'http://10.20.2.78:8000/api'; // office URL
 
   useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [clientRes, kitRes] = await Promise.all([
+          axios.get(`${base_url}/clients/`),
+          axios.get(`${base_url}/kits/`)
+        ]);
+        setClients(clientRes.data);
+        setKits(kitRes.data);
+      } catch (error) {
+        console.error('Error fetching clients/kits:', error);
+      }
+    };
     fetchInitialData();
   }, []);
 
@@ -298,9 +1398,6 @@ function App() {
     }
   }, [clientId]);
 
-
-
-
   const generateQrCodes = async () => {
     if (!clientId || !kitId) {
       alert("Please select both client and kit.");
@@ -309,7 +1406,6 @@ function App() {
 
     const _today = new Date().toISOString().split('T')[0];
     const _projectId = `${clientId}/${String(orderCount).padStart(2, '0')}`;
-
     setToday(_today);
     setProjectId(_projectId);
 
@@ -323,93 +1419,223 @@ function App() {
       date: _today,
     };
 
+    // Don't POST now, we'll post after images are captured and saved as batch.
+    const qrList = [];
+    for (let i = 1; i <= kitCount; i++) {
+      const visualData = { ...payload, kit_no: i };
+      const code = useJson
+        ? JSON.stringify(visualData, null, 2)
+        : Object.values(visualData).join(' | ');
+
+      qrList.push({
+        code,
+        label: `${kitId} | ${prodUnit} | ${warehouse} | ${_projectId} | ${i} | ${_today}`,
+      });
+    }
+
+    setQrCodes(qrList);
+  };
+
+  // ----- NEW: save all QRs (with their rendered PNGs) as JSON array -----
+  const handleSaveAllQRCodes = async () => {
+    if (!qrCodes.length) {
+      alert("No QR codes generated.");
+      return;
+    }
+    const qrImages = [];
+    for (let i = 0; i < qrCodes.length; i++) {
+      const node = document.getElementById(`qr-block-${i}`);
+      if (node) {
+        try {
+          const dataUrl = await toPng(node);
+          qrImages.push({
+            kit_no: i + 1,
+            image: dataUrl,
+          });
+        } catch (err) {
+          alert(`Failed to capture QR image for kit ${i + 1}`);
+          return;
+        }
+      }
+    }
+
+    const payload = {
+      type: "KIT",
+      kit_id: kitId,
+      prod_unit: prodUnit,
+      warehouse: warehouse,
+      project_id: projectId,
+      Total_Kit: kitCount,
+      date: today,
+      qr_images: qrImages,
+    };
+
     try {
       const res = await axios.post(`${base_url}/save-qr/`, payload);
-      console.log("QR saved:", res.data);
-
-      const qrList = [];
-      for (let i = 1; i <= kitCount; i++) {
-        const visualData = {
-          ...payload,
-          kit_no: i
-        };
-        const code = useJson
-          ? JSON.stringify(visualData, null, 2)
-          : Object.values(visualData).join(' | ');
-        qrList.push(code);
-      }
-
-      setQrCodes(qrList);
+      alert(res.data.message || "QR images saved!");
     } catch (error) {
-      console.error("Error saving QR:", error.response?.data || error.message);
-      alert("QR saving failed. Possible duplicate or invalid data.");
+      alert("Error saving QR images.");
+      console.error(error);
+    }
+  };
+  // ---- End new function ----
+
+  const handleDownload = async (index) => {
+    const node = document.getElementById(`qr-block-${index}`);
+    try {
+      const dataUrl = await toPng(node);
+      const link = document.createElement('a');
+      link.download = `QR_${index + 1}.png`;
+      link.href = dataUrl;
+      setTimeout(() => {
+        link.click();
+      }, 100);
+    } catch (err) {
+      console.error('Download failed:', err);
     }
   };
 
+  const handlePrint = async (index) => {
+    const node = document.getElementById(`qr-block-${index}`);
+    try {
+      const dataUrl = await toPng(node);
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      if (!printWindow) {
+        alert("Pop-up blocked! Please allow pop-ups for this site.");
+        return;
+      }
+      printWindow.document.write(`
+        <html>
+          <head><title>Print QR</title></head>
+          <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+            <img src="${dataUrl}" style="width:6cm; height:auto;" />
+            <script>
+              window.onload = function() {
+                setTimeout(() => {
+                  window.print();
+                  window.close();
+                }, 500);
+              };
+            </script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+    } catch (err) {
+      console.error('Print failed:', err);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'cm',
+      format: 'a4'
+    });
+
+    const margin = 2;
+    const qrSize = 6;
+    let x = margin;
+    let y = margin;
+
+    for (let i = 0; i < qrCodes.length; i++) {
+      const node = document.getElementById(`qr-block-${i}`);
+      if (!node) continue;
+      try {
+        const dataUrl = await toPng(node);
+        pdf.addImage(dataUrl, 'PNG', x, y, qrSize, qrSize + 1.2);
+        x += qrSize + margin;
+        if (x + qrSize > 21) {
+          x = margin;
+          y += qrSize + 2;
+        }
+        if (y + qrSize > 29.7 - margin) {
+          pdf.addPage();
+          x = margin;
+          y = margin;
+        }
+      } catch (err) {
+        console.error('Error rendering QR to PDF:', err);
+      }
+    }
+
+    pdf.save('All_QRCodes.pdf');
+  };
 
   return (
     <div className="App">
-      <h2>Kit QR Code Generator</h2>
+      <div className="form-container">
+        <h2>Kit QR Code Generator</h2>
 
-      <label>Client:
-        <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
-          <option value="">-- Select Client --</option>
-          {clients.map(c => (
-            <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
-          ))}
-        </select>
-      </label>
+        <label>Client:
+          <select value={clientId} onChange={(e) => setClientId(e.target.value)}>
+            <option value="">-- Select Client --</option>
+            {clients.map(c => (
+              <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+            ))}
+          </select>
+        </label>
 
-      <label>Kit:
-        <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
-          <option value="">-- Select Kit --</option>
-          {kits.map(k => (
-            <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
-          ))}
-        </select>
-      </label>
+        <label>Kit:
+          <select value={kitId} onChange={(e) => setKitId(e.target.value)}>
+            <option value="">-- Select Kit --</option>
+            {kits.map(k => (
+              <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+            ))}
+          </select>
+        </label>
 
-      <label>Production Unit:
-        <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
-          <option value="RH">Ranchi(RH)</option>
-          <option value="BS">Boisar(BS)</option>
-        </select>
-      </label>
+        <label>Production Unit:
+          <select value={prodUnit} onChange={(e) => setProdUnit(e.target.value)}>
+            <option value="RH">Ranchi (RH)</option>
+            <option value="BS">Boisar (BS)</option>
+          </select>
+        </label>
 
-      <label>Warehouse:
-        <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
-          <option value="RH">Ranchi(RH)</option>
-          <option value="BS">Boisar(BS)</option>
-          <option value="CN">Chennai(CN)</option>
-        </select>
-      </label>
+        <label>Warehouse:
+          <select value={warehouse} onChange={(e) => setWarehouse(e.target.value)}>
+            <option value="RH">Ranchi (RH)</option>
+            <option value="BS">Boisar (BS)</option>
+            <option value="CN">Chennai (CN)</option>
+          </select>
+        </label>
 
-      <label>No. of Kits:
-        <input type="number" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
-      </label>
+        <label>No. of Kits:
+          <input type="number" min="1" value={kitCount} onChange={(e) => setKitCount(Number(e.target.value))} />
+        </label>
 
-      {/* <label>Format:
-        <select value={useJson ? 'json' : 'text'} onChange={(e) => setUseJson(e.target.value === 'json')}>
-          <option value="json">JSON</option>
-          <option value="text">Plain Text</option>
-        </select>
-      </label> */}
+        <button onClick={generateQrCodes}>Generate QR Codes</button>
+        <button onClick={() => navigate('/history')} style={{ marginLeft: '12px' }}>View History
+        </button>
+      </div>
 
-      <button onClick={generateQrCodes}>Generate QR Codes</button>
+      {qrCodes.length > 0 && (
+        <div className="pdf-download-container" style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+          <button onClick={handleDownloadPDF}>Download All as PDF</button>
+          <button onClick={handleSaveAllQRCodes}>Save All QRs to DB</button>
+        </div>
+      )}
 
       <div className="qr-codes">
-        {qrCodes.map((code, i) => (
+        {qrCodes.map((item, i) => (
           <div key={i} className="qr-item">
-            <QRCode value={code} size={128} />
-            <pre>{`${kitId} | ${prodUnit} | ${warehouse} | ${projectId} | ${i + 1} | ${today}`}</pre>
+            <div id={`qr-block-${i}`} className="qr-block">
+              <div className="qr-svg-wrapper">
+                <QRCode value={item.code} size={227} />
+                <img src="/Logo.png" alt="Logo" className="qr-logo" />
+              </div>
+              <div className="qr-label">{item.label}</div>
+            </div>
+            <div className="qr-buttons">
+              <button onClick={() => handlePrint(i)}>Print</button>
+              <button onClick={() => handleDownload(i)}>Download</button>
+            </div>
           </div>
         ))}
       </div>
-
     </div>
   );
 }
 
-export default App;
-
+export default QRGenerator;
 

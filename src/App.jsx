@@ -4,6 +4,9 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import CustomerOrderForm from './CustomerOrderForm'
 import QRGeneratorPage from './productionQRGenerate'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import QRGenerator from './productionQRGenerate'
+import HistoryPage from './QRHistory'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -11,7 +14,13 @@ function App() {
   return (
     <>
       {/* <CustomerOrderForm /> */}
-      <QRGeneratorPage/>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<QRGenerator/>} />
+          <Route path="/history" element={<HistoryPage/>} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
