@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-const base_url = 'http://10.20.2.78:8000/api'; // Replace with your actual backend URL
+import { BASE_URL } from './utils/constants';
+//const base_url = 'http://10.20.2.78:8000/api'; // Replace with your actual backend URL
 
 function HistoryPage() {
   const [history, setHistory] = useState([]);
@@ -10,8 +10,10 @@ function HistoryPage() {
   useEffect(() => {
     async function fetchHistory() {
       try {
-        const res = await axios.get(`${base_url}/kit-qr-history/`);
-        setHistory(res.data);
+        const res = await axios.get(`${BASE_URL}/kit-qr-history/`);
+        // console.log(res.data)
+        // setHistory(res.data);
+        setHistory(res.data.results || []);
       } catch (err) {
         alert("Failed to fetch history");
       } finally {

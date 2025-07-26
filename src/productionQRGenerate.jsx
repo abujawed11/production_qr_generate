@@ -1353,6 +1353,7 @@ import QRCode from 'react-qr-code';
 import axios from 'axios';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
+import { BASE_URL } from './utils/constants';
 
 import './App.css';
 
@@ -1372,14 +1373,14 @@ function QRGenerator() {
 
   const navigate = useNavigate();
 
-  const base_url = 'http://10.20.2.78:8000/api'; // office URL
+  //const base_url = 'http://192.168.1.110:8000/api'; // office URL
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [clientRes, kitRes] = await Promise.all([
-          axios.get(`${base_url}/clients/`),
-          axios.get(`${base_url}/kits/`)
+          axios.get(`${BASE_URL}/clients/`),
+          axios.get(`${BASE_URL}/kits/`)
         ]);
         setClients(clientRes.data);
         setKits(kitRes.data);
@@ -1392,7 +1393,7 @@ function QRGenerator() {
 
   useEffect(() => {
     if (clientId) {
-      axios.get(`${base_url}/client-order-count/${clientId}/`)
+      axios.get(`${BASE_URL}/client-order-count/${clientId}/`)
         .then(res => setOrderCount(res.data.count))
         .catch(err => console.error(err));
     }
@@ -1471,7 +1472,7 @@ function QRGenerator() {
     };
 
     try {
-      const res = await axios.post(`${base_url}/save-qr/`, payload);
+      const res = await axios.post(`${BASE_URL}/save-qr/`, payload);
       alert(res.data.message || "QR images saved!");
     } catch (error) {
       alert("Error saving QR images.");
