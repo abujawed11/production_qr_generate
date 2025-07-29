@@ -10,3 +10,31 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+```
+react_qr_generate
+├─ eslint.config.js
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ public
+│  ├─ Logo.png
+│  └─ vite.svg
+├─ README.md
+├─ src
+│  ├─ App.css
+│  ├─ App.jsx
+│  ├─ assets
+│  │  ├─ logo.png
+│  │  └─ react.svg
+│  ├─ CustomerOrderForm.jsx
+│  ├─ index.css
+│  ├─ main.jsx
+│  ├─ productionQRGenerate.jsx
+│  ├─ QRHistory.jsx
+│  ├─ QRWithHollow.jsx
+│  └─ utils
+│     └─ constants.js
+└─ vite.config.js
+
+```

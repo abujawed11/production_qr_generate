@@ -1373,7 +1373,6 @@ function QRGenerator() {
 
   const navigate = useNavigate();
 
-  //const base_url = 'http://192.168.1.110:8000/api'; // office URL
 
   useEffect(() => {
     const fetchInitialData = async () => {
