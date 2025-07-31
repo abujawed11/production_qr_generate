@@ -88,43 +88,72 @@ button:hover {
   justify-content: center;
 } */
 
+
 .App {
   min-height: 100vh;
   min-width: 100vw;
   font-family: 'Segoe UI', sans-serif;
-  color: #333;
+  color: #FAD90E;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  /* Diagonal gradient: bottom right (br) */
-  background: linear-gradient(135deg, #FCD34D 0%, #FEF9C3 50%, #FFFFFF 100%);
-  /* Tailwind classes bg-gradient-to-br from-yellow-300 via-yellow-100 to-white mapped to hex */
+  background-color: #000000;
   padding: 0;
 }
 
-/* .form-container {
+/* FULL WIDTH MARQUEE */
+.logo-marquee {
+  position: relative;
+  width: 100vw;           /* full viewport width */
+  height: 30px;           /* adjust to logo height */
+  overflow: hidden;
+  background-color: #000;
+  padding: 10px 0;
+  border-bottom: 2px solid #FAD90E;
+  margin-bottom: 20px;
+}
+
+.logo-slider {
+  position: absolute;
+  /* width = 2 x viewport width for seamless looping */
+  width: 200vw;           
+  height: 100%;
   display: flex;
-  flex-direction: column;
-  max-width: 600px;
-  width: 100%;
-  margin: 2rem auto;
-  background: white;
-  padding: 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-} */
+  left: 0;
+  top: 0;
+  animation: slide-logo 12s linear infinite;
+}
+
+.logo-img {
+  width: 100vw;          /* logo takes full viewport width */
+  height: 100%;
+  margin: 0;
+  object-fit: contain;   /* keep aspect ratio */
+}
+
+/* Smooth infinite scrolling from right to left */
+@keyframes slide-logo {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -100vw;  /* negative viewport width */
+  }
+}
+
+/* ... rest of your CSS unchanged ... */
 
 .form-container {
   display: flex;
   flex-direction: column;
   max-width: 420px;
   width: 100%;
-  background: white;
+  background: #111111;
   padding: 2.5rem;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  margin: 52px;;                    /* Remove vertical margin */
+  box-shadow: 0 8px 20px rgba(250, 217, 14, 0.3);
+  margin: 52px;
 }
 
 @media (max-width: 900px) {
@@ -134,7 +163,11 @@ button:hover {
 
 h2 {
   margin-bottom: 1.5rem;
+  color: #FAD90E;
 }
+
+/* ... all other CSS remains as you previously shared ... */
+
 
 label {
   display: flex;
@@ -142,6 +175,7 @@ label {
   font-weight: 600;
   margin-bottom: 1rem;
   font-size: 0.95rem;
+  color: #FAD90E;
 }
 
 input,
@@ -149,13 +183,15 @@ select {
   margin-top: 0.5rem;
   padding: 0.5rem 0.75rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #FAD90E;
   border-radius: 8px;
+  background-color: #000;
+  color: #FAD90E;
 }
 
 input:focus,
 select:focus {
-  border-color: #007bff;
+  border-color: #FAD90E;
   outline: none;
 }
 
@@ -185,14 +221,15 @@ button:hover {
 
 .qr-item {
   padding: 1rem;
-  background: white;
-  border: 1px solid #ddd;
+  background: #111;
+  border: 1px solid #FAD90E;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(250, 217, 14, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 7.5cm;
+  color: #FAD90E;
 }
 
 .qr-info-top,
@@ -202,9 +239,10 @@ button:hover {
   margin: 0.3rem 0;
   word-break: break-word;
   white-space: pre-wrap;
-  color: #333;
+  color: #FAD90E;
   font-weight: 500;
 }
+
 .qr-svg-wrapper {
   position: relative;
   width: 6cm;
@@ -216,7 +254,7 @@ button:hover {
   margin: 0.4rem 0;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 8px; /* extra space for internal content */
+  padding: 8px;
 }
 
 .qr-logo {
@@ -231,8 +269,6 @@ button:hover {
   z-index: 10;
   border-radius: 3px;
 }
-
-
 
 .qr-buttons {
   display: flex;
