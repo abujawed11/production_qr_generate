@@ -1995,6 +1995,24 @@ function QRGenerator() {
     }
   }, [projectId]);
 
+
+  // Fetch kit count for selected kit and project
+  useEffect(() => {
+    // Only fetch count if both kitId and projectId are set
+    if (kitId && projectId) {
+      axios
+        .get(`${BASE_URL}/kit-order-quantity/?project_id=${projectId}&kit_id=${kitId}`)
+        .then(res => {
+          if (typeof res.data.kit_count === 'number') {
+            setKitCount(res.data.kit_count);
+          } else {
+            setKitCount(1); // Default/fallback if not found
+          }
+        })
+        .catch(() => setKitCount(1));
+    }
+  }, [kitId, projectId]);
+
   // Generate QR code (single code only)
   const generateQrCode = () => {
     if (!clientId || !projectId || !kitId) {
@@ -2074,8 +2092,15 @@ function QRGenerator() {
           ))}
         </select>
       </label>
-      <label>No. of Kits:
-        <input type="number" min="1" value={kitCount} onChange={e => setKitCount(Number(e.target.value))} />
+      <label>No. of Kits Orderd:
+        <input
+          type="number"
+          min="1"
+          value={kitCount}
+          readOnly
+          // style={{ backgroundColor: "#f0f0f0", color: "#333" }}
+          // onChange={e => setKitCount(Number(e.target.value))}
+        />
       </label>
       <label>Production Unit:
         <select value={prodUnit} onChange={e => setProdUnit(e.target.value)}>
