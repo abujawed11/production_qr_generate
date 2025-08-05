@@ -290,3 +290,63 @@ button:hover {
 .qr-buttons button:hover {
   background-color: #e0c208;
 }
+/* === QR History Page === */
+.qr-history-container {
+  padding: 2rem;
+  background-color: #0b0b0e;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.qr-history-image-box {
+  background: #212124;
+  border-radius: 8px;
+  box-shadow: 0 1.5px 8px #0006;
+  min-width: 130px;
+  width: 130px;
+  height: 165px;
+  padding: 0;
+  border: 1.2px solid #FAD90E;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+}
+
+.qr-history-image-box img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.qr-history-image-box div {
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 0 5px;
+  word-break: break-word;
+  color: #FAD90E;
+}
+
+/* Horizontal scrolling for history (optional) */
+.qr-history-scroll-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  overflow-x: auto;
+  scrollbar-color: #fad90e #23232a;
+  scrollbar-width: thin;
+}
+
+/* Optional: Custom scrollbar for Chrome */
+.qr-history-container::-webkit-scrollbar {
+  height: 6px;
+}
+.qr-history-container::-webkit-scrollbar-track {
+  background: #23232a;
+}
+.qr-history-container::-webkit-scrollbar-thumb {
+  background-color: #fad90e;
+  border-radius: 3px;
+}

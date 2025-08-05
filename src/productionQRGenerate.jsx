@@ -1373,6 +1373,7 @@
 
 //   const navigate = useNavigate();
 
+//   //const base_url = 'http://192.168.1.110:8000/api'; // office URL
 
 //   useEffect(() => {
 //     const fetchInitialData = async () => {
@@ -1638,6 +1639,7 @@
 // }
 
 // export default QRGenerator;
+
 
 // import React, { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
@@ -1937,8 +1939,6 @@
 
 // export default QRGenerator;
 
-
-
 import React, { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import axios from 'axios';
@@ -1960,14 +1960,12 @@ function QRGenerator() {
   const [today, setToday] = useState('');
   const [savedImage, setSavedImage] = useState(null);
   const [qrLabel, setQrLabel] = useState('');
-  const navigate = useNavigate(); // For history navigation
+  const navigate = useNavigate();
 
-  // Fetch clients on mount (filtered by user in backend)
   useEffect(() => {
     axios.get(`${BASE_URL}/clients/`).then(res => setClients(res.data));
   }, []);
 
-  // Fetch projects for selected client
   useEffect(() => {
     if (clientId) {
       axios.get(`${BASE_URL}/projects/?client_id=${clientId}`)
@@ -1983,7 +1981,6 @@ function QRGenerator() {
     }
   }, [clientId]);
 
-  // Fetch kits for selected project
   useEffect(() => {
     if (projectId) {
       axios.get(`${BASE_URL}/kits/?project_id=${projectId}`)
@@ -2000,20 +1997,18 @@ function QRGenerator() {
   useEffect(() => {
     // Only fetch count if both kitId and projectId are set
     if (kitId && projectId) {
-      axios
-        .get(`${BASE_URL}/kit-order-quantity/?project_id=${projectId}&kit_id=${kitId}`)
-        .then(res => {
-          if (typeof res.data.kit_count === 'number') {
-            setKitCount(res.data.kit_count);
-          } else {
-            setKitCount(1); // Default/fallback if not found
-          }
-        })
-        .catch(() => setKitCount(1));
     }
+    axios.get(`${BASE_URL}/kit-order-quantity/?project_id=${projectId}&kit_id=${kitId}`)
+      .then(res => {
+        if (typeof res.data.kit_count === 'number') {
+          setKitCount(res.data.kit_count);
+        } else {
+          setKitCount(1); // Default/fallback if not found
+        }
+      })
+      .catch(() => setKitCount(1));
   }, [kitId, projectId]);
 
-  // Generate QR code (single code only)
   const generateQrCode = () => {
     if (!clientId || !projectId || !kitId) {
       alert("Please select client, project, and kit.");
@@ -2032,13 +2027,11 @@ function QRGenerator() {
     const qrLabel = `${kitId} | ${prodUnit} | ${warehouse} | ${projectId} | ${_today}`;
     setQrLabel(qrLabel);
     setQrCode(JSON.stringify(qrPayload, null, 2));
-    setSavedImage(null); // Reset previous preview
+    setSavedImage(null);
   };
 
-  // Save QR (image + record) to DB
   const handleSaveQRCode = async () => {
     if (!qrCode) return;
-    // Generate image from QR
     const node = document.getElementById('qr-block');
     let imageDataUrl = null;
     if (node) {
@@ -2046,16 +2039,15 @@ function QRGenerator() {
       setSavedImage(imageDataUrl);
     }
 
-    // Save "business" info & image as before
     const payload = {
       type: "KIT",
       kit_id: kitId,
       prod_unit: prodUnit,
       warehouse,
       project_id: projectId,
-      Total_Kit: kitCount,  // This stays in DB but not QR
+      Total_Kit: kitCount,
       date: today,
-      qr_image: imageDataUrl, // Only ONE base64 image
+      qr_image: imageDataUrl,
     };
 
     try {
@@ -2067,70 +2059,87 @@ function QRGenerator() {
   };
 
   return (
-    <div>
-      <label>Client:
-        <select value={clientId} onChange={e => setClientId(e.target.value)}>
-          <option value="">-- Select Client --</option>
-          {clients.map(c => (
-            <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
-          ))}
-        </select>
-      </label>
-      <label>Project ID:
-        <select value={projectId} onChange={e => setProjectId(e.target.value)}>
-          <option value="">-- Select Project ID--</option>
-          {projects.map(p => (
-            <option key={p.project_id} value={p.project_id}>{p.project_id}</option>
-          ))}
-        </select>
-      </label>
-      <label>Kit:
-        <select value={kitId} onChange={e => setKitId(e.target.value)}>
-          <option value="">-- Select Kit --</option>
-          {kits.map(k => (
-            <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
-          ))}
-        </select>
-      </label>
-      <label>No. of Kits Orderd:
-        <input
-          type="number"
-          min="1"
-          value={kitCount}
-          readOnly
-          // style={{ backgroundColor: "#f0f0f0", color: "#333" }}
-          // onChange={e => setKitCount(Number(e.target.value))}
-        />
-      </label>
-      <label>Production Unit:
-        <select value={prodUnit} onChange={e => setProdUnit(e.target.value)}>
-          <option value="RH">Ranchi (RH)</option>
-          <option value="BS">Boisar (BS)</option>
-        </select>
-      </label>
-      <label>Warehouse:
-        <select value={warehouse} onChange={e => setWarehouse(e.target.value)}>
-          <option value="RH">Ranchi (RH)</option>
-          <option value="BS">Boisar (BS)</option>
-          <option value="CN">Chennai (CN)</option>
-        </select>
-      </label>
-      <button onClick={generateQrCode}>Generate QR</button>
-      {/* Restored View History button */}
-      <button onClick={() => navigate('/history')} style={{ marginLeft: '12px' }}>View History</button>
-      {qrCode &&
+    <div className="App">
+      {/* 🔁 Seamless Infinite Logo Scroll */}
+      <div className="logo-marquee">
+        <div className="logo-slider">
+          <img src="/sunrack-logo.png" alt="Sunrack Logo" className="logo-img" />
+          <img src="/sunrack-logo.png" alt="Sunrack Logo" className="logo-img" />
+        </div>
+      </div>
+
+      <div className="form-container">
+        <h2>Single Kit QR Generator</h2>
+
+        <label>Client:
+          <select value={clientId} onChange={e => setClientId(e.target.value)}>
+            <option value="">-- Select Client --</option>
+            {clients.map(c => (
+              <option key={c.client_id} value={c.client_id}>{c.company_name}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>Project ID:
+          <select value={projectId} onChange={e => setProjectId(e.target.value)}>
+            <option value="">-- Select Project ID--</option>
+            {projects.map(p => (
+              <option key={p.project_id} value={p.project_id}>{p.project_id}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>Kit:
+          <select value={kitId} onChange={e => setKitId(e.target.value)}>
+            <option value="">-- Select Kit --</option>
+            {kits.map(k => (
+              <option key={k.kit_id} value={k.kit_id}>{k.kit_id}</option>
+            ))}
+          </select>
+        </label>
+
+        <label>No. of Kits:
+          <input
+            type="number"
+            min="1"
+            value={kitCount}
+            readOnly
+            // onChange={e => setKitCount(Number(e.target.value))}
+          />
+        </label>
+
+        <label>Production Unit:
+          <select value={prodUnit} onChange={e => setProdUnit(e.target.value)}>
+            <option value="RH">Ranchi (RH)</option>
+            <option value="BS">Boisar (BS)</option>
+          </select>
+        </label>
+
+        <label>Warehouse:
+          <select value={warehouse} onChange={e => setWarehouse(e.target.value)}>
+            <option value="RH">Ranchi (RH)</option>
+            <option value="BS">Boisar (BS)</option>
+            <option value="CN">Chennai (CN)</option>
+          </select>
+        </label>
+
+        <button onClick={generateQrCode}>Generate QR</button>
+        <button onClick={() => navigate('/history')} style={{ marginLeft: '12px' }}>View History</button>
+      </div>
+
+      {qrCode && (
         <>
-          <div id="qr-block" style={{ padding: 20, background: '#fff', display: 'inline-block' }}>
-            <QRCode value={qrCode} size={227} />
-            {/* <pre>{qrCode}</pre> */}
-            <div style={{
-              marginTop: 12, fontWeight: 700, fontSize: 17, color: "#252525",
-              letterSpacing: 0.4, textAlign: "center"
-            }}>{qrLabel}</div>
+          <div id="qr-block" className="qr-block">
+            <div className="qr-svg-wrapper">
+              <QRCode value={qrCode} size={227} />
+              <img src="/Logo.png" alt="Logo" className="qr-logo" />
+            </div>
+            <div className="qr-label">{qrLabel}</div>
           </div>
           <button onClick={handleSaveQRCode}>Save QR info to DB</button>
         </>
-      }
+      )}
+
       {savedImage && (
         <div>
           <img src={savedImage} alt="Saved QR" style={{ marginTop: 16, width: 150 }} />
